@@ -42,10 +42,10 @@ protected:
 	size_t RandomSelection(std::vector<int>& array, size_t start_index, int end_index, int k_index) const
 	{
 		if (start_index == end_index) return array[start_index];		
-		srand(time(nullptr));
+		srand(static_cast<unsigned int>(time(nullptr)));
 		auto pivot_index = start_index + rand() % (end_index - start_index + 1);
 		int mid = partition(array, pivot_index, start_index, end_index);
-		auto i = mid - start_index + 1;
+		auto i = mid - static_cast<int>(start_index) + 1;
 		if (i == k_index)
 			return array[mid];
 		else if (k_index < i)
@@ -131,9 +131,9 @@ TEST_F(QuickSortTests, Test2)
     quicksort(example, 0, example.size() - 1, PivotMode::kFirstElement);
     copy(example.begin(), example.end(), std::ostream_iterator<int>(std::cout, " "));
     std::vector<int> values;
-    OpenFile("IntegerArray2.txt", &values);
-	quicksort(values, 0, values.size() - 1, PivotMode::kFirstElement);
-    int sort = 0;
+ //   OpenFile("IntegerArray2.txt", &values);
+	//quicksort(values, 0, values.size() - 1, PivotMode::kFirstElement);
+ //   int sort = 0;
     EXPECT_EQ(0.0F, 0.0F);
 }
 

@@ -16,6 +16,12 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="kargerMinCut.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="SimpleGraph.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -47,5 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\README.md" />
   </ItemGroup>
 </Project>
