@@ -108,8 +108,8 @@ protected:
 		}
 		void KargerStep()
 		{
-			//auto item = edges_.begin();
-			//int random_index = rand() % edges_.size();
+			//auto item = graph_.begin();
+			//int random_index = rand() % graph_.size();
 			//advance(item, random_index);
 			//auto source_node = item->first;
 			//auto destination_node = item->second.first;
@@ -195,8 +195,13 @@ TEST_F(GraphTests, BreadthFirstSearch)
 
 TEST_F(GraphTests, SimpleGraph_Min_Cut_Problem_Verbose)
 {
-	auto time_ui = unsigned int(time(nullptr));
-	srand(time_ui);
+	//auto time_ui = unsigned int(time(nullptr));
+	//srand(time_ui);
+	//auto item = graph_.begin();
+	//int random_index = rand() % graph_.size();
+	//advance(item, random_index);
+	//auto source_node = item->first;
+	//auto destination_node = item->second.first;
 	auto start = std::chrono::steady_clock::now();
 	auto graph = Graph<int, double>();
 	graph.ReadAdjacencyList("SimpleGraph.txt", ListTypes::kNoWeights, &graph);
