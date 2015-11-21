@@ -24,6 +24,18 @@
     <Text Include="kargerMinCut.txt">
       <Filter>Resource Files\Source Files\TextFiles</Filter>
     </Text>
+    <Text Include="10.txt">
+      <Filter>Resource Files\Source Files\TextFiles</Filter>
+    </Text>
+    <Text Include="100.txt">
+      <Filter>Resource Files\Source Files\TextFiles</Filter>
+    </Text>
+    <Text Include="1000.txt">
+      <Filter>Resource Files\Source Files\TextFiles</Filter>
+    </Text>
+    <Text Include="kargerMinCutSimple.txt">
+      <Filter>Resource Files\Source Files\TextFiles</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

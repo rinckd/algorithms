@@ -139,6 +139,11 @@ TEST_F(QuickSortTests, Test2)
 
 TEST_F(QuickSortTests, RandomizedSelection)
 {
+    //Answers for 10, 100 and 1000.txt files :
+    //size   first      last      median
+    //    10     25        29        21
+    //    100   615       587       518
+    //    1000 10297    10184      8921
 	std::vector<int> A = { 9,5,7,1,10,2,3 };
 	int loc = RandomSelection(A, 0, 6, 5);
 	EXPECT_EQ(0.0F, 0.0F);

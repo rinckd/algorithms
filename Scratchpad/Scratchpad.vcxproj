@@ -147,7 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="10.txt" />
+    <Text Include="100.txt" />
+    <Text Include="1000.txt" />
     <Text Include="kargerMinCut.txt" />
+    <Text Include="kargerMinCutSimple.txt" />
     <Text Include="SimpleGraph.txt" />
   </ItemGroup>
   <ItemGroup>
