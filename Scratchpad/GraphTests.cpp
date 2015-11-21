@@ -173,6 +173,25 @@ TEST_F(GraphTests, AdjacencyList)
 	EXPECT_EQ(0.0F, 0.0F);
 }
 
+TEST_F(GraphTests, BreadthFirstSearch)
+{
+    auto start = std::chrono::steady_clock::now();
+    auto g = Graph<int, double>();
+    g.ReadAdjacencyList("SimpleGraph.txt", ListTypes::kNoWeights, &g);
+
+    unsigned int n = g.node_label(1);
+    std::cout << "node n=" << n << std::endl;
+    auto range = g.edges(1);
+    for (auto it = range.first; it != range.second; ++it)
+    {
+        std::cout << "e=(" << it->first << "," << it->second.first << ",w=" << it->second.second << ")" << std::endl;
+    }
+    int sort = 0;
+    auto end = std::chrono::steady_clock::now();
+    auto diff = end - start;
+    auto time_in_ms = std::chrono::duration <double, std::milli>(diff).count();
+    EXPECT_EQ(0.0F, 0.0F);
+}
 
 TEST_F(GraphTests, SimpleGraph_Min_Cut_Problem_Verbose)
 {

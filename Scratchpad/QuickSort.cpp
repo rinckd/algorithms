@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include <gtest/gtest.h>
 #include <algorithm>
 #include <fstream>
 #include <random>
 #include <string>
+#include "../packages/gtest.1.7.0.1/build/native/include/gtest/gtest.h"
 
 class QuickSortTests : public testing::Test
 {

@@ -2,9 +2,9 @@
 //
 
 #include "stdafx.h"
-#include <gtest/gtest.h>
 #include <string>
 #include <fstream>
+#include "../packages/gtest.1.7.0.1/build/native/include/gtest/gtest.h"
 
 class GoogleTests : public testing::Test
 {

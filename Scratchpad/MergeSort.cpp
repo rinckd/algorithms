@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <fstream>
+#include <vector>
+#include <string>
 
 class MergeSortTests : public testing::Test
 {
