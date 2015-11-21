@@ -148,7 +148,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="kargerMinCut.txt" />
-    <Text Include="ReadMe.txt" />
     <Text Include="SimpleGraph.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +159,7 @@
     <ClCompile Include="MergeSort.cpp" />
     <ClCompile Include="QuickSort.cpp" />
     <ClCompile Include="Scratchpad.cpp" />
+    <ClCompile Include="SimpleGraphTests.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
