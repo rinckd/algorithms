@@ -10,14 +10,13 @@ public:
     class Matrix
     {
     public:
-        static void EigenTests()
+	    static double DotProduct()
         {
-            Eigen::MatrixXd m(2, 2);
-            m(0, 0) = 3;
-            m(1, 0) = 2.5;
-            m(0, 1) = -1;
-            m(1, 1) = m(1, 0) + m(0, 1);
-            std::cout << m << std::endl;
+			Eigen::VectorXd v(5);
+			v << 1.0, 1.0, 1.0, 1.0, 1.0;
+			Eigen::VectorXd v2(5);
+			v2 << 10.0, 20.0, 0.0, 40.0, -100.0;
+			return v.dot(v2);
         }
     };
 protected:
@@ -26,11 +25,8 @@ protected:
 };
 
 
-TEST_F(MatrixTests, Test2)
+TEST_F(MatrixTests, DotProduct)
 {
-
-    Matrix::EigenTests();
-    std::vector<int> values;
-    int sort = 0;
-    EXPECT_EQ(0.0F, 0.0F);
+    auto return_value = Matrix::DotProduct();
+    EXPECT_EQ(-30.0, return_value);
 }

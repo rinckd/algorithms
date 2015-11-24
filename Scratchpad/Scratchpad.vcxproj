@@ -159,6 +159,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="StockPrices.cpp" />
     <ClCompile Include="__EmptyTestTemplate.cpp" />
     <ClCompile Include="GraphTests.cpp" />
     <ClCompile Include="MatrixTests.cpp" />
