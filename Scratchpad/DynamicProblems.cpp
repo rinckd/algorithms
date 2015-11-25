@@ -5,7 +5,30 @@
 
 class DynamicProblemTests : public testing::Test
 {
-public:
+public: 
+    class Temperature
+    {
+    public:
+        Temperature() :
+        avg_temp_(0.0F),
+        temp_sum_(0.0F),
+        min_temp_(std::numeric_limits<float>::min()),
+        max_temp_(std::numeric_limits<float>::max()) {}
+        void insert(float value)
+        {
+            max_temp_ = std::max(max_temp_, value);
+            min_temp_ = std::min(min_temp_, value);
+            temp_sum_ += value;
+            avg_temp_ = temp_sum_ / static_cast<float>(temperature_.size());
+        }
+        float avg_temp_;
+        float temp_sum_;
+        float min_temp_;
+        float max_temp_;
+        std::vector<float> temperature_;
+    };
+
+
     class Rectangle
     {
     public:    
