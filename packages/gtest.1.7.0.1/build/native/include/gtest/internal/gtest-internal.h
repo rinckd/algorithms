@@ -277,7 +277,7 @@ class FloatingPoint {
   // around may change its bits, although the new value is guaranteed
   // to be also a NAN.  Therefore, don't expect this constructor to
   // preserve the bits in x when x is a NAN.
-  explicit FloatingPoint(const RawType& x) { u_.value_ = x; }
+  explicit FloatingPoint(const RawType& x) { u_.node_value_ = x; }
 
   // Static methods
 
@@ -287,7 +287,7 @@ class FloatingPoint {
   static RawType ReinterpretBits(const Bits bits) {
     FloatingPoint fp(0);
     fp.u_.bits_ = bits;
-    return fp.u_.value_;
+    return fp.u_.node_value_;
   }
 
   // Returns the floating-point number that represent positive infinity.

@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include <initializer_list>
+#include <queue>
+#include <fstream>
 
 class BinaryTreeTests : public testing::Test
 {
@@ -27,8 +29,8 @@ public:
         Tree(Tree const & lft, T val, Tree const & rgt)
             : tree_root_(std::make_shared<const Node>(lft.tree_root_, val, rgt.tree_root_))
         {
-            assert(lft.isEmpty() || lft.root() < val);
-            assert(rgt.isEmpty() || val < rgt.root());
+            assert(lft.IsEmpty() || lft.node_value() < val);
+            assert(rgt.IsEmpty() || val < rgt.node_value());
         }
         Tree(std::initializer_list<T> init_values)
         {
@@ -39,27 +41,27 @@ public:
             }
             tree_root_ = tree.tree_root_;
         }
-        bool isEmpty() const { return !tree_root_; }
-        T root() const
+        bool IsEmpty() const { return !tree_root_; }
+        T node_value() const
         {
-            assert(!isEmpty());
+            assert(!IsEmpty());
             return tree_root_->node_value_;
         }
         Tree left() const
         {
-            assert(!isEmpty());
+            assert(!IsEmpty());
             return Tree(tree_root_->left_);
         }
         Tree right() const
         {
-            assert(!isEmpty());
+            assert(!IsEmpty());
             return Tree(tree_root_->right_);
         }
         bool IsMember(T x) const
         {
-            if (isEmpty())
+            if (IsEmpty())
                 return false;
-            T y = root();
+            T y = node_value();
             if (x < y)
                 return left().IsMember(x);
             else if (y < x)
@@ -69,9 +71,9 @@ public:
         }
         Tree Insert(T x) const
         {
-            if (isEmpty())
+            if (IsEmpty())
                 return Tree(Tree(), x, Tree());
-            T y = root();
+            T y = node_value();
             if (x < y)
                 return Tree(left().Insert(x), y, right());
             else if (y < x)
@@ -79,16 +81,53 @@ public:
             else
                 return *this; // no duplicates
         }
-        void static PrintTree(Tree<T> const & t, int offset = 0)
+        void static PrintNullNode(int key, int nullcount, std::ofstream& output_stream)
         {
-            if (!t.isEmpty())
+            output_stream << "    null" << nullcount << " [shape=point];\n";
+            output_stream << "    " << key << " -> null" << nullcount << ";\n";
+        }
+
+        void static PrintNode(Tree<T> const & t, std::ofstream& output_stream)
+        {
+            static int nullcount = 0;
+
+            if (!t.left().IsEmpty())
             {
-                for (int i = 0; i < offset; ++i)
-                    std::cout << " ";
-                std::cout << t.root() << std::endl;
-                PrintTree(t.left(), offset);
-                PrintTree(t.right(), offset + 4);
+                output_stream << "    " << t.node_value() << " -> " << t.left().node_value() << ";\n";
+                PrintNode(t.left(), output_stream);
             }
+            else
+            {
+                PrintNullNode(t.node_value(), nullcount++, output_stream);
+            }
+
+            if (!t.right().IsEmpty())
+            {
+                output_stream << "    " << t.node_value() << " -> " << t.right().node_value() << ";\n";
+                PrintNode(t.right(), output_stream);
+            }
+            else
+            {
+                PrintNullNode(t.node_value(), nullcount++, output_stream);
+            }
+        }
+        void static PrintTree(Tree<T> const & t, std::ofstream& output_stream, int offset = 0)
+        {
+            output_stream << "digraph BST {\n";
+            output_stream << "    node [fontname=\"Arial\"];\n";
+            if (t.IsEmpty())
+            {
+                output_stream << "\n";
+            }
+            else if (t.right().IsEmpty() && t.left().IsEmpty())
+            {
+                output_stream << "    " << t.node_value() << ";\n";
+            }
+            else
+            {
+                PrintNode(t, output_stream);
+            }
+            output_stream << "}\n";
         }
     private:
         std::shared_ptr<const Node> tree_root_;
@@ -98,7 +137,7 @@ public:
     void forEach(Tree<T> t, F f) {
         if (!t.IsEmpty()) {
             forEach(t.left(), f);
-            f(t.root());
+            f(t.node_value());
             forEach(t.right(), f);
         }
     }
@@ -114,7 +153,9 @@ TEST_F(BinaryTreeTests, SimpleUnbalanced)
 {
     Tree<int> tree{ 1, 2, 3};
     tree = tree.Insert(400);
-    Tree<int>::PrintTree(tree);
+    std::ofstream myfile;
+    myfile.open("example.txt");
+    Tree<int>::PrintTree(tree, myfile, 0);
     EXPECT_EQ(0.0F, 0.0F);
 }
 
@@ -123,6 +164,6 @@ TEST_F(BinaryTreeTests, Test2)
     auto t = Tree<int>().Insert(2).Insert(4).Insert(3).Insert(5).Insert(6).Insert(1);
     std::cout << "Is member 1? " << t.IsMember(1) << std::endl;
     std::cout << "Is member 10? " << t.IsMember(10) << std::endl;
-    Tree<int>::PrintTree(t);
+    //Tree<int>::PrintTree(t);
     EXPECT_EQ(0.0F, 0.0F);
 }

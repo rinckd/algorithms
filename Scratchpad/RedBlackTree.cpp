@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <gtest/gtest.h>
 #include <memory>
+#include <fstream>
 
 class RedBlackTreeTests : public testing::Test
 {
@@ -8,18 +9,19 @@ public:
     template<class T>
     class RedBlackTree
     {
-        enum Color { Red, Black };
+    public:
+        enum class Color { Red, Black };
 
         struct Node
         {
             Node(Color c, std::shared_ptr<const Node> const & lft, T val,std::shared_ptr<const Node> const & rgt): 
                 color_(c), 
                 left_(lft), 
-                value_(val), 
+                node_value_(val), 
                 right_(rgt) {}
             Color color_;
             std::shared_ptr<const Node> left_;
-            T value_;
+            T node_value_;
             std::shared_ptr<const Node> right_;
         };
         explicit RedBlackTree(std::shared_ptr<const Node> const & node) : root_(node) {}
@@ -29,8 +31,8 @@ public:
         RedBlackTree(Color c, RedBlackTree const & left, T val, RedBlackTree const & right)
             : root_(std::make_shared<const Node>(c, left.root_, val, right.root_))
         {
-            assert(left.IsEmpty() || left.root() < val);
-            assert(right.IsEmpty() || val < right.root());
+            assert(left.IsEmpty() || left.node_value() < val);
+            assert(right.IsEmpty() || val < right.node_value());
         }
         RedBlackTree(std::initializer_list<T> init)
         {
@@ -56,10 +58,10 @@ public:
             root_ = t.root_;
         }
         bool IsEmpty() const { return !root_; }
-        T root() const
+        T node_value() const
         {
             assert(!IsEmpty());
-            return root_->value_;
+            return root_->node_value_;
         }
         RedBlackTree left() const
         {
@@ -75,7 +77,7 @@ public:
         {
             if (IsEmpty())
                 return false;
-            T y = root();
+            T y = node_value();
             if (x < y)
                 return left().IsMember(x);
             else if (y < x)
@@ -86,7 +88,7 @@ public:
         RedBlackTree Insert(T x) const
         {
             RedBlackTree t = InsertNode(x);
-            return RedBlackTree(Black, t.left(), t.root(), t.right());
+            return RedBlackTree(Color::Black, t.left(), t.node_value(), t.right());
         }
         // 1. No red node has a red child.
         void assert1() const
@@ -95,16 +97,16 @@ public:
             {
                 auto lft = left();
                 auto rgt = right();
-                if (rootColor() == Red)
+                if (rootColor() == Color::Red)
                 {
-                    assert(lft.IsEmpty() || lft.rootColor() == Black);
-                    assert(rgt.IsEmpty() || rgt.rootColor() == Black);
+                    assert(lft.IsEmpty() || lft.rootColor() == Color::Black);
+                    assert(rgt.IsEmpty() || rgt.rootColor() == Color::Black);
                 }
                 lft.assert1();
                 rgt.assert1();
             }
         }
-        // 2. Every path from root to empty node contains the same
+        // 2. Every path from node_value to empty node contains the same
         // number of black nodes.
         int countB() const
         {
@@ -113,17 +115,17 @@ public:
             int lft = left().countB();
             int rgt = right().countB();
             assert(lft == rgt);
-            return (rootColor() == Black) ? 1 + lft : lft;
+            return (rootColor() == Color::Black) ? 1 + lft : lft;
         }
     private:
         RedBlackTree InsertNode(T x) const
         {
             assert1();
             if (IsEmpty())
-                return RedBlackTree(Red, RedBlackTree(), x, RedBlackTree());
-            T y = root();
+                return RedBlackTree(Color::Red, RedBlackTree(), x, RedBlackTree());
+            T y = node_value();
             Color c = rootColor();
-            if (rootColor() == Black)
+            if (rootColor() == Color::Black)
             {
                 if (x < y)
                     return BalanceNodes(left().InsertNode(x), y, right());
@@ -146,76 +148,118 @@ public:
         static RedBlackTree BalanceNodes(RedBlackTree const & left, T value, RedBlackTree const & right)
         {
             if (left.doubledLeft())
-                return RedBlackTree(Red
-                    , left.left().paint(Black)
-                    , left.root()
-                    , RedBlackTree(Black, left.right(), value, right));
+                return RedBlackTree(Color::Red
+                    , left.left().paint(Color::Black)
+                    , left.node_value()
+                    , RedBlackTree(Color::Black, left.right(), value, right));
             else if (left.doubledRight())
-                return RedBlackTree(Red
-                    , RedBlackTree(Black, left.left(), left.root(), left.right().left())
-                    , left.right().root()
-                    , RedBlackTree(Black, left.right().right(), value, right));
+                return RedBlackTree(Color::Red
+                    , RedBlackTree(Color::Black, left.left(), left.node_value(), left.right().left())
+                    , left.right().node_value()
+                    , RedBlackTree(Color::Black, left.right().right(), value, right));
             else if (right.doubledLeft())
-                return RedBlackTree(Red
-                    , RedBlackTree(Black, left, value, right.left().left())
-                    , right.left().root()
-                    , RedBlackTree(Black, right.left().right(), right.root(), right.right()));
+                return RedBlackTree(Color::Red
+                    , RedBlackTree(Color::Black, left, value, right.left().left())
+                    , right.left().node_value()
+                    , RedBlackTree(Color::Black, right.left().right(), right.node_value(), right.right()));
             else if (right.doubledRight())
-                return RedBlackTree(Red
-                    , RedBlackTree(Black, left, value, right.left())
-                    , right.root()
-                    , right.right().paint(Black));
+                return RedBlackTree(Color::Red
+                    , RedBlackTree(Color::Black, left, value, right.left())
+                    , right.node_value()
+                    , right.right().paint(Color::Black));
             else
-                return RedBlackTree(Black, left, value, right);
+                return RedBlackTree(Color::Black, left, value, right);
         }
         bool doubledLeft() const
         {
             return !IsEmpty()
-                && rootColor() == Red
+                && rootColor() == Color::Red
                 && !left().IsEmpty()
-                && left().rootColor() == Red;
+                && left().rootColor() == Color::Red;
         }
         bool doubledRight() const
         {
             return !IsEmpty()
-                && rootColor() == Red
+                && rootColor() == Color::Red
                 && !right().IsEmpty()
-                && right().rootColor() == Red;
+                && right().rootColor() == Color::Red;
         }
         RedBlackTree paint(Color c) const
         {
             assert(!IsEmpty());
-            return RedBlackTree(c, left(), root(), right());
+            return RedBlackTree(c, left(), node_value(), right());
         }
     private:
         std::shared_ptr<const Node> root_;
     };
 
-    template<class T>
-    void static PrintTree(RedBlackTree<T> const & t, int offset = 0)
+    void static PrintNullNode(int key, int nullcount, std::ofstream& output_stream)
     {
-        if (!t.IsEmpty())
+        output_stream << "    null" << nullcount << " [shape=point];\n";
+        output_stream << "    " << key << " -> null" << nullcount << ";\n";
+    }
+    template<class T>
+    void static PrintNode(RedBlackTree<T> const & t, std::ofstream& output_stream)
+    {
+        static int nullcount = 0;
+
+        if (!t.left().IsEmpty())
         {
-            for (int i = 0; i < offset; ++i)
-                std::cout << " ";
-            std::cout << t.root() << std::endl;
-            if (t.rootColor() == 0)
+            output_stream << "    node [fillcolor=";
+            if (t.rootColor() == RedBlackTree<T>::Color::Black)
             {
-                for (int i = 0; i < offset; ++i)
-                    std::cout << " ";
-                std::cout << "Red"<< std::endl;
+                output_stream << "\"#0000005f\"];\n";
             }
             else
             {
-                for (int i = 0; i < offset; ++i)
-                    std::cout << " ";
-                std::cout << "Black" << std::endl;
+                output_stream << "\"#ff00005f\"];\n";
             }
-            PrintTree(t.left(), offset);
-            PrintTree(t.right(), offset + 4);
+            output_stream << "    " << t.node_value() << " -> " << t.left().node_value() << ";\n";
+            PrintNode(t.left(), output_stream);
+        }
+        else
+        {
+            PrintNullNode(t.node_value(), nullcount++, output_stream);
+        }
+
+        if (!t.right().IsEmpty())
+        {
+            output_stream << "    node [fillcolor=";
+            if (t.rootColor() == RedBlackTree<T>::Color::Black)
+            {
+                output_stream << "\"#0000005f\"];\n";
+            }
+            else
+            {
+                output_stream << "\"#ff00005f\"];\n";
+            }
+            output_stream << "    " << t.node_value() << " -> " << t.right().node_value() << ";\n";
+            PrintNode(t.right(), output_stream);
+        }
+        else
+        {
+            PrintNullNode(t.node_value(), nullcount++, output_stream);
         }
     }
-
+    template<class T>
+    void static PrintTree(RedBlackTree<T> const & t, std::ofstream& output_stream, int offset = 0)
+    {
+        output_stream << "digraph BST {\n";
+        output_stream << "    node [fontname=\"Arial\" style=filled];\n";
+        if (t.IsEmpty())
+        {
+            output_stream << "\n";
+        }
+        else if (t.right().IsEmpty() && t.left().IsEmpty())
+        {
+            output_stream << "    " << t.node_value() << ";\n";
+        }
+        else
+        {
+            PrintNode(t, output_stream);
+        }
+        output_stream << "}\n";
+    }
     template<class T>
     RedBlackTree<T> TreeUnion(RedBlackTree<T> const & a, RedBlackTree<T> const & b)
     {
@@ -240,6 +284,8 @@ protected:
 TEST_F(RedBlackTreeTests, Test2)
 {
     RedBlackTree<int> t{ 50, 40, 30, 10, 20, 30, 100, 0, 45, 55, 25, 15 };
-    PrintTree(t);
+    std::ofstream myfile;
+    myfile.open("example.txt");
+    PrintTree(t, myfile, 0);
     EXPECT_EQ(0.0F, 0.0F);
 }
