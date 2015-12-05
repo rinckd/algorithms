@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DynamicProblems.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="RedBlackTree.cpp" />
     <ClCompile Include="StockPrices.cpp" />
     <ClCompile Include="Tree.cpp" />

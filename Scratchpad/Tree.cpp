@@ -15,23 +15,19 @@ public:
         {
             Node(std::shared_ptr<const Node> const & lft, T val, std::shared_ptr<const Node> const & rgt) : 
                 left_(lft), 
-                node_value_(val), 
-                right_(rgt)
+                right_(rgt), 
+                node_value_(val)
             {}
 
             std::shared_ptr<const Node> left_;
-            T node_value_;
             std::shared_ptr<const Node> right_;
+			T node_value_;
         };
         explicit Tree(std::shared_ptr<const Node> const & node) : tree_root_(node) {}
     public:
         Tree() {}
         Tree(Tree const & lft, T val, Tree const & rgt)
-            : tree_root_(std::make_shared<const Node>(lft.tree_root_, val, rgt.tree_root_))
-        {
-            assert(lft.IsEmpty() || lft.node_value() < val);
-            assert(rgt.IsEmpty() || val < rgt.node_value());
-        }
+            : tree_root_(std::make_shared<const Node>(lft.tree_root_, val, rgt.tree_root_)) {}
         Tree(std::initializer_list<T> init_values)
         {
             Tree tree;

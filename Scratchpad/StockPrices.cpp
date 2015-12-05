@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <fstream>
+#include <map>
 
 class StockPricesTest : public testing::Test
 {
@@ -91,16 +92,92 @@ public:
 			return merged_meetings;
 		}
 	};
+
+	int static FindRotationPoint(std::vector<std::string>& words)
+	{
+		auto first_word = words.at(0);
+		auto floor_index = 0U;
+		auto ceiling_index = words.size() - 1;
+		do
+		{
+			auto guess_index = floor_index + (ceiling_index - floor_index) / 2;
+			if (words.at(guess_index).at(0) > first_word.at(0))
+			{
+				// go right
+				floor_index = guess_index;
+			}
+			else
+			{
+				// go left
+				ceiling_index = guess_index;
+			}
+			if (floor_index + 1 == ceiling_index)
+			{
+				return ceiling_index;
+			}
+		} while (floor_index < ceiling_index);
+
+		return 0;
+	}
+
+	class Fibonacci
+	{
+		std::map<int, int> memoized_;
+	public:
+		int CalcFibonacci(int series)
+		{
+			if (series <= 1)
+			{
+				return series;
+			}
+			auto map_value = memoized_.find(series);
+			if (map_value != memoized_.end())
+			{
+				return map_value->second;
+			}
+
+			auto result = CalcFibonacci(series - 1) + CalcFibonacci(series - 2);
+			memoized_.insert(std::pair<int, int>(series, result));
+			return result;
+		}
+		int CalcFibIterative(int series)
+		{
+			auto start_value = 0;
+			auto next_value = 1;
+			auto cumulative_value = 0;
+			for (int i = 0; i < series; i++)
+			{
+				cumulative_value = start_value + next_value;
+				start_value = next_value;
+				next_value = cumulative_value;
+			}
+			return cumulative_value;
+		}
+	};
+
+
 protected:
 	StockPricesTest() {}
 	virtual ~StockPricesTest() {}
 };
 
-
+TEST_F(StockPricesTest, RotationPoint)
+{
+	std::vector<std::string> word_dict{ "k", "v", "a", "b","c","d","e","g","i" };
+	auto test = FindRotationPoint(word_dict);
+	EXPECT_EQ(test, 2);
+}
 TEST_F(StockPricesTest, MaxProfit)
 {
 	std::vector<int> stock_prices_yesterday{ 10, 7, 5, 8, 11, 9 };	
 	EXPECT_EQ(StockPrices::MaxProfit(stock_prices_yesterday), 6);
+}
+
+TEST_F(StockPricesTest, Fibonacci)
+{
+	Fibonacci fib;
+	auto test = fib.CalcFibIterative(11);
+	auto j = 0;
 }
 
 TEST_F(StockPricesTest, ProductsOfInts)
