@@ -139,6 +139,8 @@ TEST_F(QuickSortTests, Test2)
 
 TEST_F(QuickSortTests, RandomizedSelection)
 {
+	unsigned int test = 4738381338321616895;
+
     //Answers for 10, 100 and 1000.txt files :
     //size   first      last      median
     //    10     25        29        21

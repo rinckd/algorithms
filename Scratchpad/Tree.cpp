@@ -125,6 +125,75 @@ public:
             }
             output_stream << "}\n";
         }
+		int MinimumDepth(Tree<T> const& root)
+		{
+			if (root.IsEmpty())
+			{
+				return 0;
+			}
+			if (root.left().IsEmpty() && root.right().IsEmpty())
+			{
+				return 1;
+			}
+			auto left = -1;
+			auto right = -1;
+			if (!root.left().IsEmpty())
+			{
+				left = MinimumDepth(root.left()) + 1;
+			}
+			if (!root.right().IsEmpty())
+			{
+				right = MinimumDepth(root.right()) + 1;
+			}
+
+			if (right >= 0 && right < left)
+			{
+				return right;
+			}
+			else
+			{
+				if (left >= 0)
+				{
+					return left;
+				}
+				return right;
+			}
+		}
+
+		std::vector<std::vector<T> > RunPathSum(Tree<T> const& root, T sum )
+        {
+			std::vector<std::vector<T> > result;
+			std::vector<T> v;
+			GeneratePathSum(root, sum, v, result);
+			return result;
+        }
+		void GeneratePathSum(Tree<T> const& root, T sum, std::vector<T> v, std::vector<std::vector<T> >& result)
+        {
+			if (root.IsEmpty()) 
+			{
+				return;
+			}
+
+			if (root.left().IsEmpty() && root.right().IsEmpty()) 
+			{
+				if (root.node_value() == sum) 
+				{
+					v.push_back(root.node_value());
+					result.push_back(v);
+				}
+				return;
+			}
+
+			v.push_back(root.node_value());
+			if (!root.left().IsEmpty()) 
+			{
+				GeneratePathSum(root.left(), sum - root.node_value(), v, result);
+			}
+			if (!root.right().IsEmpty()) 
+			{
+				GeneratePathSum(root.right(), sum - root.node_value(), v, result);
+			}
+        }
     private:
         std::shared_ptr<const Node> tree_root_;
     };
@@ -157,9 +226,12 @@ TEST_F(BinaryTreeTests, SimpleUnbalanced)
 
 TEST_F(BinaryTreeTests, Test2)
 {
-    auto t = Tree<int>().Insert(2).Insert(4).Insert(3).Insert(5).Insert(6).Insert(1);
+    auto t = Tree<int>().Insert(4).Insert(200).Insert(280).Insert(300).Insert(6).Insert(1).Insert(2);
+	auto result = t.RunPathSum(t, 7);
     std::cout << "Is member 1? " << t.IsMember(1) << std::endl;
     std::cout << "Is member 10? " << t.IsMember(10) << std::endl;
-    //Tree<int>::PrintTree(t);
+	std::ofstream myfile;
+	myfile.open("example.txt");
+	Tree<int>::PrintTree(t, myfile, 0);
     EXPECT_EQ(0.0F, 0.0F);
 }

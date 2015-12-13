@@ -44,6 +44,8 @@ public:
 			}
 		}
 
+
+
 		void print() const
 		{
 			std::shared_ptr<Node<T>> currentNode(head_);
